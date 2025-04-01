@@ -42,10 +42,8 @@ class MCPClient:
         if not self.session:
             raise RuntimeError("Not connected to MCP server")
 
-        tools = await self.session.list_tools()
-        _, tools_list = tools
-        _, tools_list = tools_list
-        return tools_list
+        list_tools_result = await self.session.list_tools()
+        return list_tools_result.tools
 
     def call_tool(self, tool_name: str) -> Any:
         """
@@ -67,22 +65,6 @@ class MCPClient:
 
         return callable
 
-
-server_params = StdioServerParameters(
-    command="docker",
-    args=[
-        "run",
-        "--rm",  # Remove container after exit
-        "-i",  # Interactive mode
-        "-v",  # Mount volume
-        "mcp-test:/mcp",  # Map local volume to container path
-        "mcp/sqlite",  # Use SQLite MCP image
-        "--db-path",
-        "/mcp/test.db",  # Database file path inside container
-    ],
-    env=None
-)
-mcp_client = MCPClient(server_params=server_params)
 
 
 
